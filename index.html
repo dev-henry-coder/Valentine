@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Quiz ❤️</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(45deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: #5a1a2e;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            padding: 2.5rem;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+            margin: 1rem 0;
+            z-index: 10;
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .container.active {
+            display: block;
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #e63946;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #e63946;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #8a2846;
+            line-height: 1.6;
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: #5a1a2e;
+            min-height: 70px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .option-btn {
+            padding: 1.2rem 1rem;
+            font-size: 1.3rem;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #a8edea, #fed6e3);
+            color: #5a1a2e;
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .option-btn.correct {
+            background: linear-gradient(to right, #56ab2f, #a8e063);
+            color: white;
+        }
+        
+        .option-btn.wrong {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+        
+        .feedback {
+            font-size: 1.4rem;
+            margin: 1.5rem 0;
+            min-height: 80px;
+            padding: 1rem;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .next-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ff6b8b, #ff8e53);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.3);
+            display: none;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 139, 0.4);
+        }
+        
+        .next-btn.show {
+            display: inline-block;
+        }
+        
+        .heart-emoji {
+            font-size: 2rem;
+            margin: 0 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .score-display {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #8a2846;
+            margin: 1rem 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b8b, #ff8e53);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .final-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .final-btn.yes {
+            background: linear-gradient(to right, #56ab2f, #a8e063);
+            color: white;
+        }
+        
+        .final-btn.no {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+        
+        .final-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .celebration {
+            display: none;
+            padding: 2rem;
+        }
+        
+        .celebration h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .celebration p {
+            font-size: 1.5rem;
+            margin: 1.5rem 0;
+            color: #8a2846;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: #e63946;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(to right, #ff6b8b, #ff8e53);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+        
+        .music-toggle.muted {
+            background: rgba(255, 255, 255, 0.9);
+            animation: shake 0.5s ease-in-out infinite alternate;
+        }
+        
+        .music-toggle i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .music-toggle.muted i {
+            color: #e63946;
+        }
+        
+        .celebration-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .bae-image-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 8px solid white;
+            margin: 0 auto;
+        }
+        
+        .bae-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .bae-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .love-message {
+            background: linear-gradient(135deg, #fff0f3, #ffe6ea);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid #e63946;
+        }
+        
+        .love-message h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            color: #e63946;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .love-message p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #5a1a2e;
+            margin-bottom: 1rem;
+        }
+        
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #e63946;
+            text-align: right;
+            margin-top: 1.5rem;
+        }
+        
+        .image-message-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .autoplay-notice {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+            color: #e63946;
+            z-index: 101;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Countdown Styles */
+        .countdown-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 99;
+            text-align: center;
+            min-width: 180px;
+            border: 3px solid #e63946;
+        }
+        
+        .countdown-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #e63946;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .countdown-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #e63946;
+            line-height: 1;
+            min-width: 30px;
+        }
+        
+        .countdown-label {
+            font-size: 0.7rem;
+            color: #8a2846;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+        
+        .countdown-separator {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #e63946;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .valentine-message {
+            font-size: 0.9rem;
+            color: #8a2846;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        
+        .music-required {
+            background: linear-gradient(135deg, #fff0f3, #ffe6ea);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            border: 3px solid #e63946;
+            animation: pulse 2s infinite;
+        }
+        
+        .music-required h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: #e63946;
+            margin-bottom: 1rem;
+        }
+        
+        .music-required p {
+            font-size: 1.2rem;
+            color: #5a1a2e;
+            margin-bottom: 0.5rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(-3px); }
+            100% { transform: translateX(3px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes confettiRain {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(1000px) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            top: -20px;
+            opacity: 0;
+            z-index: 5;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .option-btn {
+                padding: 1rem;
+                font-size: 1.2rem;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .final-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .bae-image-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .image-message-container {
+                flex-direction: column;
+            }
+            
+            .love-message {
+                padding: 1.5rem;
+            }
+            
+            .autoplay-notice {
+                width: 90%;
+                text-align: center;
+                font-size: 0.8rem;
+                padding: 8px 15px;
+            }
+            
+            .countdown-container {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin: 20px auto;
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            .music-toggle {
+                top: 80px;
+                right: 20px;
+            }
+            
+            .music-required {
+                padding: 1.2rem;
+            }
+            
+            .music-required h3 {
+                font-size: 1.5rem;
+            }
+            
+            .music-required p {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+            
+            .feedback {
+                font-size: 1.2rem;
+            }
+            
+            .bae-image-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .love-message h3 {
+                font-size: 1.8rem;
+            }
+            
+            .love-message p {
+                font-size: 1.1rem;
+            }
+            
+            .countdown-container {
+                padding: 12px 18px;
+            }
+            
+            .countdown-title {
+                font-size: 1.3rem;
+            }
+            
+            .countdown-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Countdown to Valentine's Day -->
+    <div class="countdown-container" id="countdownContainer">
+        <div class="countdown-title">Valentine's Day Countdown ❤️</div>
+        <div class="countdown-timer" id="countdownTimer">
+            <div class="countdown-item">
+                <div class="countdown-number" id="days">00</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">00</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        <div class="valentine-message" id="countdownMessage">
+            Counting down to our special day! 💕
+        </div>
+    </div>
+    
+    <!-- Music Toggle -->
+    <div class="music-toggle muted" id="musicToggle">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+    
+    <!-- Autoplay Notice -->
+    <div class="autoplay-notice" id="autoplayNotice">
+        Romantic music is ready! Click the music button to unmute and start the quiz.
+    </div>
+    
+    <!-- Start Screen -->
+    <div class="container active" id="startScreen">
+        <h1>Valentine's Quiz ❤️</h1>
+        <p class="subtitle">I have a special 5-question quiz for you, my love!<br>
+        Each question is super easy - even a child can answer them!</p>
+        
+        <div class="subtitle" style="margin-top: 2rem;">
+            <span class="heart-emoji">💖</span> Are you ready for some fun?
+            <span class="heart-emoji">💖</span>
+        </div>
+        
+        <!-- Music Required Notice -->
+        <div class="music-required" id="musicRequiredNotice">
+            <h3>Music Required! 🎵</h3>
+            <p>Please click the sound icon above to unmute the romantic music first!</p>
+            <p>Then you can start the quiz. I want you to enjoy the music while playing! 💕</p>
+        </div>
+        
+        <button class="next-btn show" id="startBtn">Start the Quiz! <i class="fas fa-play-circle"></i></button>
+    </div>
+    
+    <!-- Question 1 -->
+    <div class="container" id="question1">
+        <h2>Question 1</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress1" style="width: 0%"></div>
+        </div>
+        
+        <div class="question">What do you call the day when people celebrate love?</div>
+        
+        <div class="options">
+            <button class="option-btn" data-answer="wrong">Monday</button>
+            <button class="option-btn" data-answer="wrong">Birthday</button>
+            <button class="option-btn" data-answer="correct">Valentine's Day</button>
+            <button class="option-btn" data-answer="wrong">Friday</button>
+        </div>
+        
+        <div class="feedback" id="feedback1">
+            Choose your answer, sweetheart!
+        </div>
+        
+        <button class="next-btn" id="next1">Next Question <i class="fas fa-arrow-right"></i></button>
+    </div>
+    
+    <!-- Question 2 -->
+    <div class="container" id="question2">
+        <h2>Question 2</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress2" style="width: 20%"></div>
+        </div>
+        
+        <div class="question">What color are most Valentine's Day hearts?</div>
+        
+        <div class="options">
+            <button class="option-btn" data-answer="wrong">Blue</button>
+            <button class="option-btn" data-answer="correct">Red</button>
+            <button class="option-btn" data-answer="wrong">Green</button>
+            <button class="option-btn" data-answer="wrong">Yellow</button>
+        </div>
+        
+        <div class="feedback" id="feedback2">
+            Pick the right answer, my love!
+        </div>
+        
+        <button class="next-btn" id="next2">Next Question <i class="fas fa-arrow-right"></i></button>
+    </div>
+    
+    <!-- Question 3 -->
+    <div class="container" id="question3">
+        <h2>Question 3</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress3" style="width: 40%"></div>
+        </div>
+        
+        <div class="question">Which of these is a symbol of love?</div>
+        
+        <div class="options">
+            <button class="option-btn" data-answer="wrong">Lightning bolt</button>
+            <button class="option-btn" data-answer="correct">Heart</button>
+            <button class="option-btn" data-answer="wrong">Square</button>
+            <button class="option-btn" data-answer="wrong">Triangle</button>
+        </div>
+        
+        <div class="feedback" id="feedback3">
+            You're doing great! Choose wisely...
+        </div>
+        
+        <button class="next-btn" id="next3">Next Question <i class="fas fa-arrow-right"></i></button>
+    </div>
+    
+    <!-- Question 4 -->
+    <div class="container" id="question4">
+        <h2>Question 4</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress4" style="width: 60%"></div>
+        </div>
+        
+        <div class="question">What sweet treat is often given on Valentine's Day?</div>
+        
+        <div class="options">
+            <button class="option-btn" data-answer="wrong">Broccoli</button>
+            <button class="option-btn" data-answer="correct">Chocolate</button>
+            <button class="option-btn" data-answer="wrong">Potato chips</button>
+            <button class="option-btn" data-answer="wrong">Carrots</button>
+        </div>
+        
+        <div class="feedback" id="feedback4">
+            Almost there! Pick the sweet answer...
+        </div>
+        
+        <button class="next-btn" id="next4">Next Question <i class="fas fa-arrow-right"></i></button>
+    </div>
+    
+    <!-- Question 5 -->
+    <div class="container" id="question5">
+        <h2>Question 5</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress5" style="width: 80%"></div>
+        </div>
+        
+        <div class="question">Complete this phrase: "Roses are red, violets are..."</div>
+        
+        <div class="options">
+            <button class="option-btn" data-answer="wrong">Green</button>
+            <button class="option-btn" data-answer="wrong">Yellow</button>
+            <button class="option-btn" data-answer="correct">Blue</button>
+            <button class="option-btn" data-answer="wrong">Pink</button>
+        </div>
+        
+        <div class="feedback" id="feedback5">
+        Last question! You're almost perfect!
+        </div>
+        
+        <button class="next-btn" id="next5">See Results! <i class="fas fa-trophy"></i></button>
+    </div>
+    
+    <!-- Final Question Screen -->
+    <div class="container" id="finalQuestionScreen">
+        <h1>One Last Question... ❤️</h1>
+        
+        <div class="subtitle" style="font-size: 1.5rem; margin: 2rem 0;">
+            You got all the questions right! You're absolutely perfect!<br><br>
+            Now I have one very important question for you...
+        </div>
+        
+        <div class="question" style="font-size: 1.8rem; color: #e63946;">
+            Are you ready? Do you promise not to disappoint me, bae?
+        </div>
+        
+        <div class="feedback" id="finalFeedback" style="min-height: 60px; font-size: 1.4rem;">
+            Please say yes, my love...
+        </div>
+        
+        <button class="next-btn show" id="readyBtn">I'm Ready! <i class="fas fa-heart"></i></button>
+    </div>
+    
+    <!-- Proposal Screen -->
+    <div class="container" id="proposalScreen">
+        <h1 class="pulse-animation">Will You Be My Valentine? ❤️</h1>
+        
+        <div class="subtitle" style="font-size: 1.5rem; margin: 2rem 0;">
+            After that amazing quiz, I know you're the one!<br>
+            You're smart, beautiful, and perfect in every way!
+        </div>
+        
+        <div class="question" style="font-size: 2.2rem; color: #e63946; min-height: 100px;">
+            So, my love... will you be my Valentine?
+        </div>
+        
+        <div class="final-buttons">
+            <button class="final-btn yes" id="yesBtn">
+                <i class="fas fa-heart"></i> YES! 💖
+            </button>
+            <button class="final-btn no" id="noBtn">
+                <i class="fas fa-heart-broken"></i> No 😅
+            </button>
+        </div>
+        
+        <div class="feedback" id="proposalFeedback" style="margin-top: 2rem;">
+            My heart is waiting for your answer...
+        </div>
+    </div>
+    
+    <!-- Celebration Screen with Bae Image -->
+    <div class="container celebration" id="celebrationScreen">
+        <h1>YAY!! 💖🎉</h1>
+        
+        <p>You just made me the happiest person in the world!</p>
+        
+        <div class="image-message-container">
+            <!-- Bae Image -->
+            <div class="bae-image-container">
+                <img src="/bae.jpeg" alt="My beautiful Valentine" class="bae-image" id="baeImage" onerror="handleImageError()">
+            </div>
+            
+            <!-- Love Message -->
+            <div class="love-message">
+                <h3>To My Beautiful Valentine 💕</h3>
+                <p>You are the most amazing person I've ever met. Your smile lights up my world, your laughter is my favorite sound, and your heart is the most beautiful thing about you.</p>
+                
+                <p>You are strong, kind, intelligent, and incredibly beautiful inside and out. Every moment with you feels like a dream come true, and I'm so grateful to have you in my life.</p>
+                
+                <p>This is our second year together, and I can't wait for all the adventures we'll have. I promise to cherish you, support you, and love you more with each passing day.</p>
+                
+                <p>You mean everything to me, and I fall for you more every single day. I love you more than words can express.</p>
+                
+                <div class="signature">I love you so much ❤️</div>
+            </div>
+        </div>
+        
+        <div style="font-size: 3rem; margin: 2rem 0;">
+            ❤️💖😍💘🎉💕
+        </div>
+        
+        <p style="font-size: 1.3rem;">Get ready for romance, cuddles, and lots of love!</p>
+        
+        <button class="next-btn show" id="restartBtn" style="margin-top: 2rem;">
+            <i class="fas fa-redo"></i> Take the Quiz Again?
+        </button>
+    </div>
+    
+    <!-- Wrong Answer Screen -->
+    <div class="container" id="wrongAnswerScreen">
+        <h1>Oops! 🥺</h1>
+        
+        <div class="subtitle" style="font-size: 1.5rem; margin: 2rem 0;">
+            You got one wrong, but that's okay!<br>
+            Even the smartest people make mistakes sometimes!
+        </div>
+        
+        <div class="question" style="font-size: 1.8rem; color: #e63946;">
+            Want to try again? I believe in you!
+        </div>
+        
+        <div class="feedback" id="wrongFeedback" style="margin: 2rem 0; font-size: 1.3rem;">
+            Don't worry, my love. You can do it!
+        </div>
+        
+        <button class="next-btn show" id="retryBtn">
+            <i class="fas fa-redo"></i> Try Again, My Love!
+        </button>
+    </div>
+    
+    <!-- Background hearts -->
+    <div id="heartsContainer"></div>
+    
+    <!-- Audio for background music - whitekeys.mp3 -->
+    <audio id="backgroundMusic" loop autoplay muted>
+        <source src="whitekeys.mp3" type="audio/mpeg">
+        <!-- Fallback to a placeholder if needed -->
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-sunset-687.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const question1 = document.getElementById('question1');
+        const question2 = document.getElementById('question2');
+        const question3 = document.getElementById('question3');
+        const question4 = document.getElementById('question4');
+        const question5 = document.getElementById('question5');
+        const finalQuestionScreen = document.getElementById('finalQuestionScreen');
+        const proposalScreen = document.getElementById('proposalScreen');
+        const celebrationScreen = document.getElementById('celebrationScreen');
+        const wrongAnswerScreen = document.getElementById('wrongAnswerScreen');
+        const baeImage = document.getElementById('baeImage');
+        const musicToggle = document.getElementById('musicToggle');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const autoplayNotice = document.getElementById('autoplayNotice');
+        const musicRequiredNotice = document.getElementById('musicRequiredNotice');
+        const startBtn = document.getElementById('startBtn');
+        
+        // Countdown elements
+        const countdownContainer = document.getElementById('countdownContainer');
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const countdownMessage = document.getElementById('countdownMessage');
+        
+        const nextBtns = [null, document.getElementById('next1'), document.getElementById('next2'), 
+                         document.getElementById('next3'), document.getElementById('next4'), 
+                         document.getElementById('next5')];
+        const readyBtn = document.getElementById('readyBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        // State variables
+        let currentQuestion = 0;
+        let score = 0;
+        let isMusicPlaying = false; // Start with music muted
+        let noClickCount = 0;
+        let countdownInterval;
+        let quizStarted = false;
+        
+        // Questions data
+        const questions = [
+            {
+                question: "What do you call the day when people celebrate love?",
+                options: ["Monday", "Birthday", "Valentine's Day", "Friday"],
+                correct: 2,
+                feedback: {
+                    correct: "Perfect! You know what day it is! 💕",
+                    wrong: "Almost! It's Valentine's Day! ❤️"
+                }
+            },
+            {
+                question: "What color are most Valentine's Day hearts?",
+                options: ["Blue", "Red", "Green", "Yellow"],
+                correct: 1,
+                feedback: {
+                    correct: "Yes! Red is the color of love! ❤️",
+                    wrong: "Good try! But Valentine's hearts are usually red! 💖"
+                }
+            },
+            {
+                question: "Which of these is a symbol of love?",
+                options: ["Lightning bolt", "Heart", "Square", "Triangle"],
+                correct: 1,
+                feedback: {
+                    correct: "Exactly! The heart symbolizes love! 💘",
+                    wrong: "Close! But the heart is the universal symbol of love! 💕"
+                }
+            },
+            {
+                question: "What sweet treat is often given on Valentine's Day?",
+                options: ["Broccoli", "Chocolate", "Potato chips", "Carrots"],
+                correct: 1,
+                feedback: {
+                    correct: "Yum! Chocolate is the sweetest gift! 🍫",
+                    wrong: "Delicious thought, but chocolate is the Valentine's treat! 🍫"
+                }
+            },
+            {
+                question: "Complete this phrase: 'Roses are red, violets are...'",
+                options: ["Green", "Yellow", "Blue", "Pink"],
+                correct: 2,
+                feedback: {
+                    correct: "Perfect! You know the poem! 🌹💙",
+                    wrong: "Almost! The poem goes 'violets are blue'! 💙"
+                }
+            }
+        ];
+        
+        // Initialize the page
+        function init() {
+            createHearts();
+            setupEventListeners();
+            backgroundMusic.volume = 0.6; // Set volume for the song
+            
+            // Initialize countdown
+            startCountdown();
+            
+            // Start music automatically (but muted initially)
+            startAutoplayMusic();
+            
+            // Preload bae image
+            preloadImage('/bae.jpeg');
+            
+            // Preload the quiz screens
+            loadQuestion(1);
+            
+            // Update start button state
+            updateStartButton();
+        }
+        
+        // Update start button based on music state
+        function updateStartButton() {
+            if (isMusicPlaying) {
+                // Music is unmuted - enable the button
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                startBtn.style.cursor = 'pointer';
+                startBtn.title = 'Start the Valentine\'s Quiz!';
+                musicRequiredNotice.style.display = 'none';
+            } else {
+                // Music is muted - disable the button
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.6';
+                startBtn.style.cursor = 'not-allowed';
+                startBtn.title = 'Please unmute the music first!';
+                musicRequiredNotice.style.display = 'block';
+            }
+        }
+        
+        // Start countdown to Valentine's Day
+        function startCountdown() {
+            // Set Valentine's Day date (February 14 of current year)
+            const currentYear = new Date().getFullYear();
+            let valentinesDate = new Date(currentYear, 1, 14); // Month is 0-indexed, so 1 = February
+            
+            // If Valentine's Day has already passed this year, set to next year
+            if (new Date() > valentinesDate) {
+                valentinesDate = new Date(currentYear + 1, 1, 14);
+            }
+            
+            // Update countdown immediately and then every second
+            updateCountdown(valentinesDate);
+            countdownInterval = setInterval(() => updateCountdown(valentinesDate), 1000);
+        }
+        
+        // Update countdown display
+        function updateCountdown(targetDate) {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            // If countdown is over
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                daysElement.textContent = "00";
+                hoursElement.textContent = "00";
+                minutesElement.textContent = "00";
+                secondsElement.textContent = "00";
+                countdownMessage.textContent = "Happy Valentine's Day! 🎉❤️";
+                countdownContainer.style.background = "linear-gradient(to right, #ff6b8b, #ff8e53)";
+                countdownContainer.style.color = "white";
+                countdownContainer.style.borderColor = "white";
+                
+                // Update text colors for better visibility
+                document.querySelector('.countdown-title').style.color = "white";
+                document.querySelectorAll('.countdown-number').forEach(el => el.style.color = "white");
+                document.querySelectorAll('.countdown-label').forEach(el => el.style.color = "rgba(255,255,255,0.9)");
+                countdownMessage.style.color = "rgba(255,255,255,0.9)";
+                return;
+            }
+            
+            // Calculate days, hours, minutes, seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Update display
+            daysElement.textContent = days.toString().padStart(2, '0');
+            hoursElement.textContent = hours.toString().padStart(2, '0');
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
+            
+            // Update message based on time remaining
+            if (days === 0 && hours < 24) {
+                countdownMessage.textContent = "Valentine's Day is today! ❤️";
+                countdownContainer.style.background = "linear-gradient(to right, #ff6b8b, #ff8e53)";
+            } else if (days === 1) {
+                countdownMessage.textContent = "Valentine's Day is tomorrow! 💕";
+            } else if (days < 7) {
+                countdownMessage.textContent = `${days} days until Valentine's Day! 💖`;
+            } else {
+                countdownMessage.textContent = "Counting down to our special day! 💕";
+            }
+        }
+        
+        // Start music with autoplay (but muted initially)
+        function startAutoplayMusic() {
+            // Start with music muted
+            backgroundMusic.muted = true;
+            isMusicPlaying = false;
+            musicToggle.classList.add('muted');
+            musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            
+            // Try to play music immediately (but muted)
+            const playPromise = backgroundMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Music started successfully (muted)
+                    console.log("Music autoplay started (muted)");
+                    
+                    // Show notice about how to unmute
+                    showAutoplayNotice("Click the music button above to unmute romantic music 🎵");
+                }).catch(error => {
+                    // Autoplay was prevented
+                    console.log("Autoplay prevented:", error);
+                    
+                    // Show instruction to click to play
+                    showAutoplayNotice("Click the music button to play 'whitekeys.mp3' 🎵");
+                });
+            }
+        }
+        
+        // Show autoplay notice
+        function showAutoplayNotice(message) {
+            if (!message) {
+                message = "Romantic music is ready! Click the music button to unmute.";
+            }
+            
+            autoplayNotice.textContent = message;
+            autoplayNotice.style.display = 'block';
+            
+            // Hide notice after 5 seconds
+            setTimeout(() => {
+                autoplayNotice.style.opacity = '0';
+                setTimeout(() => {
+                    autoplayNotice.style.display = 'none';
+                    autoplayNotice.style.opacity = '1';
+                }, 500);
+            }, 5000);
+        }
+        
+        // Preload image to avoid flickering
+        function preloadImage(url) {
+            const img = new Image();
+            img.src = url;
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Start button - check if music is unmuted first
+            startBtn.addEventListener('click', () => {
+                if (!isMusicPlaying) {
+                    // Music is still muted - show message
+                    showMusicRequiredMessage();
+                    return;
+                }
+                
+                // Music is unmuted - start the quiz
+                hideAllScreens();
+                question1.classList.add('active');
+                createHearts();
+                quizStarted = true;
+            });
+            
+            // Next buttons for each question
+            for (let i = 1; i <= 5; i++) {
+                if (nextBtns[i]) {
+                    nextBtns[i].addEventListener('click', () => goToNextQuestion(i));
+                }
+                
+                // Option buttons for each question
+                const optionBtns = document.querySelectorAll(`#question${i} .option-btn`);
+                optionBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        handleAnswer(this, i);
+                    });
+                });
+            }
+            
+            // Ready button for final question
+            readyBtn.addEventListener('click', () => {
+                hideAllScreens();
+                proposalScreen.classList.add('active');
+                createHearts();
+            });
+            
+            // Yes button (proposal)
+            yesBtn.addEventListener('click', handleYesClick);
+            
+            // No button (proposal)
+            noBtn.addEventListener('click', handleNoClick);
+            
+            // Retry button (wrong answer screen)
+            retryBtn.addEventListener('click', () => {
+                resetQuiz();
+                hideAllScreens();
+                startScreen.classList.add('active');
+            });
+            
+            // Restart button (celebration screen)
+            restartBtn.addEventListener('click', () => {
+                resetQuiz();
+                hideAllScreens();
+                startScreen.classList.add('active');
+            });
+            
+            // Music toggle - unmutes/mutes the music
+            musicToggle.addEventListener('click', toggleMusic);
+            
+            // Click anywhere to start music if autoplay was blocked
+            document.addEventListener('click', () => {
+                if (backgroundMusic.paused && !isMusicPlaying) {
+                    // Try to play music on first user interaction
+                    const playPromise = backgroundMusic.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            console.log("Music started on user interaction");
+                        }).catch(e => {
+                            console.log("Still can't play:", e);
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Show music required message
+        function showMusicRequiredMessage() {
+            // Highlight the music button
+            musicToggle.style.animation = 'shake 0.5s ease-in-out infinite alternate';
+            
+            // Show message in feedback area
+            const feedback = document.getElementById('feedback1') || document.querySelector('.feedback');
+            if (feedback) {
+                feedback.innerHTML = '<span style="color:#e63946; font-weight:bold;">🎵 Please unmute the music first! Click the sound icon above! 🎵</span>';
+                feedback.style.backgroundColor = '#fff0f3';
+                feedback.style.border = '2px solid #e63946';
+            }
+            
+            // Show autoplay notice
+            showAutoplayNotice("Click the music button above to unmute and start the quiz! 🎵");
+            
+            // Reset animation after 3 seconds
+            setTimeout(() => {
+                musicToggle.style.animation = '';
+            }, 3000);
+        }
+        
+        // Handle image loading error
+        function handleImageError() {
+            // If the bae image doesn't load, show a placeholder with a heart
+            baeImage.style.display = 'none';
+            const container = document.querySelector('.bae-image-container');
+            container.innerHTML = `
+                <div style="width:100%; height:100%; background:linear-gradient(135deg, #ffafbd, #ffc3a0); 
+                           display:flex; align-items:center; justify-content:center; border-radius:12px;">
+                    <div style="text-align:center; color:#e63946;">
+                        <i class="fas fa-heart" style="font-size:4rem; margin-bottom:1rem;"></i>
+                        <p style="font-size:1.2rem; font-weight:bold;">My Beautiful Bae 💕</p>
+                        <p style="font-size:0.9rem; margin-top:0.5rem;">(Image: bae.jpeg)</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Load a specific question
+        function loadQuestion(questionNum) {
+            const question = questions[questionNum - 1];
+            const questionElement = document.getElementById(`question${questionNum}`);
+            
+            // Update question text
+            const questionText = questionElement.querySelector('.question');
+            questionText.textContent = question.question;
+            
+            // Update options
+            const options = questionElement.querySelectorAll('.option-btn');
+            options.forEach((btn, index) => {
+                btn.textContent = question.options[index];
+                btn.classList.remove('correct', 'wrong');
+                btn.disabled = false;
+            });
+            
+            // Reset feedback
+            const feedback = questionElement.querySelector('.feedback');
+            feedback.textContent = `Question ${questionNum}: Choose your answer, sweetheart!`;
+            feedback.style.color = '#5a1a2e';
+            feedback.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+            feedback.style.border = 'none';
+            
+            // Hide next button initially
+            const nextBtn = nextBtns[questionNum];
+            nextBtn.classList.remove('show');
+        }
+        
+        // Handle answer selection
+        function handleAnswer(button, questionNum) {
+            const question = questions[questionNum - 1];
+            const options = document.querySelectorAll(`#question${questionNum} .option-btn`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const nextBtn = nextBtns[questionNum];
+            
+            // Disable all options
+            options.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // Check if answer is correct
+            const selectedIndex = Array.from(options).indexOf(button);
+            const isCorrect = selectedIndex === question.correct;
+            
+            // Mark correct and wrong answers
+            options.forEach((btn, index) => {
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                } else if (btn === button && !isCorrect) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            // Update feedback
+            if (isCorrect) {
+                feedback.textContent = question.feedback.correct;
+                feedback.style.color = '#56ab2f';
+                score++;
+            } else {
+                feedback.textContent = question.feedback.wrong;
+                feedback.style.color = '#ff6b6b';
+            }
+            
+            // Show next button
+            nextBtn.classList.add('show');
+            
+            // If wrong answer on the last question, show wrong answer screen
+            if (!isCorrect && questionNum === 5) {
+                setTimeout(() => {
+                    hideAllScreens();
+                    wrongAnswerScreen.classList.add('active');
+                    createHearts();
+                }, 1500);
+            }
+        }
+        
+        // Go to next question
+        function goToNextQuestion(currentQ) {
+            if (currentQ < 5) {
+                hideAllScreens();
+                const nextQuestion = document.getElementById(`question${currentQ + 1}`);
+                nextQuestion.classList.add('active');
+                loadQuestion(currentQ + 1);
+                
+                // Update progress bar
+                const progressBar = document.getElementById(`progress${currentQ + 1}`);
+                progressBar.style.width = `${(currentQ) * 20}%`;
+            } else {
+                // All questions answered - check if all correct
+                if (score === 5) {
+                    hideAllScreens();
+                    finalQuestionScreen.classList.add('active');
+                } else {
+                    hideAllScreens();
+                    wrongAnswerScreen.classList.add('active');
+                }
+            }
+        }
+        
+        // Handle "Yes" button click on proposal
+        function handleYesClick() {
+            hideAllScreens();
+            celebrationScreen.classList.add('active');
+            createConfetti();
+            
+            // Ensure music is unmuted when she says yes
+            if (backgroundMusic.muted) {
+                backgroundMusic.muted = false;
+                isMusicPlaying = true;
+                musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+                musicToggle.classList.remove('muted');
+            }
+        }
+        
+        // Handle "No" button click on proposal
+        function handleNoClick() {
+            noClickCount++;
+            const feedback = document.getElementById('proposalFeedback');
+            const yesBtn = document.getElementById('yesBtn');
+            
+            // Change messages based on click count
+            const messages = [
+                "Are you sure? 🥺",
+                "That wasn't the right answer 😏",
+                "Try again, my love 💕",
+                "You're breaking my heart 💔",
+                "Okay okay... last chance 😘"
+            ];
+            
+            const messageIndex = Math.min(noClickCount - 1, messages.length - 1);
+            feedback.textContent = messages[messageIndex];
+            
+            // Make "Yes" button bigger
+            yesBtn.style.transform = `scale(${1 + noClickCount * 0.1})`;
+            
+            // Move "No" button
+            moveNoButton();
+            
+            // If many "No" clicks, change button text
+            if (noClickCount >= 3) {
+                noBtn.innerHTML = `<i class="fas fa-heart-broken"></i> Still No? 😭`;
+            }
+        }
+        
+        // Move "No" button randomly
+        function moveNoButton() {
+            const containerRect = proposalScreen.getBoundingClientRect();
+            const buttonRect = noBtn.getBoundingClientRect();
+            
+            const maxX = containerRect.width - buttonRect.width - 40;
+            const maxY = containerRect.height - buttonRect.height - 100;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY + 350}px`;
+            
+            const rotation = Math.random() * 30 - 15;
+            noBtn.style.transform = `rotate(${rotation}deg)`;
+        }
+        
+        // Toggle background music (mute/unmute)
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                // Mute the music
+                backgroundMusic.muted = true;
+                musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                musicToggle.classList.add('muted');
+                isMusicPlaying = false;
+            } else {
+                // Unmute the music
+                backgroundMusic.muted = false;
+                musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+                musicToggle.classList.remove('muted');
+                isMusicPlaying = true;
+                
+                // Ensure music is playing
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play().catch(e => {
+                        console.log("Error playing music:", e);
+                    });
+                }
+                
+                // Update start button state
+                updateStartButton();
+                
+                // Show success message
+                if (!quizStarted) {
+                    showAutoplayNotice("Great! Now you can start the quiz! 💕");
+                }
+            }
+            
+            // Hide autoplay notice if visible
+            if (autoplayNotice.style.display === 'block') {
+                autoplayNotice.style.opacity = '0';
+                setTimeout(() => {
+                    autoplayNotice.style.display = 'none';
+                    autoplayNotice.style.opacity = '1';
+                }, 500);
+            }
+        }
+        
+        // Create floating hearts in background
+        function createHearts() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            heartsContainer.innerHTML = '';
+            
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                
+                const size = Math.random() * 25 + 15;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 10 + 10;
+                
+                heart.style.left = `${left}vw`;
+                heart.style.top = `${Math.random() * 100}vh`;
+                heart.style.fontSize = `${size}px`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.style.opacity = '0.7';
+                    heart.style.transform = `translateY(-100vh)`;
+                    heart.style.transition = `all ${duration}s linear`;
+                }, 100);
+                
+                setTimeout(() => {
+                    heart.style.opacity = '0';
+                    heart.style.transform = `translateY(0)`;
+                    heart.style.transition = 'none';
+                    
+                    setTimeout(() => {
+                        heart.style.left = `${Math.random() * 100}vw`;
+                        heart.style.top = `100vh`;
+                        heart.style.opacity = '0.7';
+                        heart.style.transition = `all ${duration}s linear`;
+                        heart.style.transform = `translateY(-100vh)`;
+                    }, 100);
+                }, duration * 1000);
+            }
+        }
+        
+        // Create confetti animation
+        function createConfetti() {
+            const colors = ['#e63946', '#ffafbd', '#ff6b8b', '#ff8e53', '#a8edea', '#56ab2f'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 12 + 8;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 2;
+                
+                confetti.style.backgroundColor = color;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.left = `${left}vw`;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.style.opacity = '1';
+                    confetti.style.animation = `confettiRain ${animationDuration}s linear forwards`;
+                }, 10);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+        }
+        
+        // Hide all screens
+        function hideAllScreens() {
+            const screens = [
+                startScreen, question1, question2, question3, question4, question5,
+                finalQuestionScreen, proposalScreen, celebrationScreen, wrongAnswerScreen
+            ];
+            
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+        }
+        
+        // Reset quiz to initial state
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            noClickCount = 0;
+            quizStarted = false;
+            
+            // Reset progress bars
+            for (let i = 1; i <= 5; i++) {
+                const progressBar = document.getElementById(`progress${i}`);
+                progressBar.style.width = `${(i-1) * 20}%`;
+            }
+            
+            // Reset proposal screen buttons
+            yesBtn.style.transform = 'scale(1)';
+            noBtn.style.position = '';
+            noBtn.style.left = '';
+            noBtn.style.top = '';
+            noBtn.style.transform = '';
+            noBtn.innerHTML = `<i class="fas fa-heart-broken"></i> No 😅`;
+            
+            // Reload all questions
+            for (let i = 1; i <= 5; i++) {
+                loadQuestion(i);
+            }
+            
+            // Update start button
+            updateStartButton();
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
